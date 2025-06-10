@@ -9,6 +9,8 @@
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
@@ -150,10 +152,29 @@
         footer ul li {
             margin-bottom: 8px;
         }
+
+        /* CSS untuk Search Bar Peta Kustom */
+        /* Sekarang berada di dalam container dengan peta, sebagai elemen blok */
+        .map-search-container {
+            width: 100%;
+            max-width: 400px; /* Maksimum lebar search bar */
+            margin: 0 auto 20px auto; /* Tengah secara horizontal, dan jarak bawah ke peta */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 9999px; /* Bentuk melengkung */
+            overflow: hidden; /* Penting untuk rounded corners */
+        }
+        .map-search-container input {
+            border: none;
+            outline: none;
+        }
+        .map-search-container button {
+            cursor: pointer;
+            flex-shrink: 0;
+        }
     </style>
 
 </head>
-<body class="bg-white">
+<body>
 
     <nav class="w-full bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -162,8 +183,7 @@
                     <img alt="SITARA KECAMATAN BOYOLALI SPATIAL AND LAND INFORMATION SYSTEM" class="h-12 w-auto" height="32" src="LOGO SITARA.png" width="32"/>
                 </div>
                 <div class="hidden md:flex space-x-6 text-[10px] font-semibold uppercase">
-                </div>
-                </div>
+                    </div>
             </div>
         </div>
     </nav>
@@ -172,16 +192,14 @@
         <img alt="Aerial view of Banten city buildings and landscape with a misty sky" class="absolute inset-0 w-full h-full object-cover -z-10" height="480" loading="lazy" src="https://storage.googleapis.com/a1aa/image/6f532192-27f7-42e0-733e-3824e0aeee6a.jpg" width="1920"/>
         <img alt="Banten provincial emblem logo with green, yellow, and red colors" class="mb-3" height="64" loading="lazy" src="LOGO BOYOLALI.png" width="64"/>
         <h1 class="text-white font-bold text-sm leading-tight max-w-md mb-1 drop-shadow-md">
-            SPATIAL AND LAND INFORMATION SYSTEM 
+            SPATIAL AND LAND INFORMATION SYSTEM
         </h1>
-        </p>
         <form class="w-full max-w-lg flex items-center mx-auto">
             <input class="flex-grow rounded-l-full py-2 px-4 text-xs focus:outline-none" placeholder="Apa yang Anda Cari?" type="text"/>
             <button aria-label="Search" class="bg-yellow-400 hover:bg-yellow-500 text-white rounded-r-full p-2" type="submit">
                 <i class="fas fa-search text-xs"></i>
             </button>
         </form>
-
     </section>
 
     <button aria-label="Laporan Kejadian" class="fixed bottom-6 right-6 bg-yellow-400 hover:bg-yellow-500 text-black text-xs font-semibold rounded-md px-4 py-2 flex items-center space-x-2 shadow-md z-50">
@@ -195,12 +213,11 @@
                 APA ITU
                 <a class="text-blue-600 font-semibold hover:underline" href="#">SITARA?</a>
             </h1>
-            <p class="font-san serif
-             text-gray-700 leading-relaxed">
+            <p class="font-sans text-gray-700 leading-relaxed">
                 SITARA adalah website pusat layanan informasi pertanahan online. Tujuan utamanya adalah membuat sistem informasi yang meningkatkan efektivitas dan efisiensi penilaian tanah, serta menyajikan informasi nilai tanah bagi yang memerlukan. SITARA dapat diakses oleh admin, penilai, petugas BPN, dan masyarakat.
             </p>
         </div>
-        <img class="flex justify-start" src="https://assets.promediateknologi.id/crop/0x0:0x0/0x0/webp/photo/p2/84/2023/09/30/Kali-Talang-Umbul-Nepen-3114863945.jpg" alt="LOGO BOYOLALI.png" data-image-width="2000" data-image-height="1600">
+        <img class="flex justify-start" src="https://gistaru.bantenprov.go.id/assetsweb/images/BANTEN.PNG" alt="LOGO BOYOLALI.png" data-image-width="2000" data-image-height="1600">
     </div>
 
     <div class="min-h-screen flex flex-col items-center justify-center px-4 py-10" style="background-color:#0f2a5a">
@@ -264,7 +281,7 @@
         </button>
     </div>
 
-     <div class="relative min-h-screen bg-gradient-to-tr from-[#00040f] via-[#001a3d] to-[#001a3d] flex flex-col items-center px-4 py-12">
+    <div class="relative min-h-screen bg-gradient-to-tr from-[#00040f] via-[#001a3d] to-[#001a3d] flex flex-col items-center px-4 py-12">
         <h1 class="text-white text-5xl font-normal mb-2">
             DATABASE
             <span class="text-yellow-400 font-semibold">PETA</span>
@@ -301,19 +318,19 @@
         </div>
         <div id="mapid"></div>
     </div>
-    
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <script src="lib/L.Geoserver.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function() {
             console.log("DOM content loaded. Initializing map...");
 
             var map = L.map('mapid').setView([-7.560019594484371, 110.64402303634841], 15);
+            
+            // Memberi waktu Leaflet untuk menghitung ukuran div peta dengan benar
             setTimeout(function () {
-    map.invalidateSize();
-}, 500);;
+                map.invalidateSize();
+            }, 500);
 
             // OpenStreetMap tiles sebagai base layer
             var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -329,15 +346,11 @@
                 version: '1.1.0', // Atau '1.3.0' tergantung konfigurasi GeoServer Anda
                 attribution: "GeoServer Data"
             });
-            // Tidak langsung ditambahkan ke peta, tapi ke baseLayers/overlays
-
-            // Legend dari GeoServer (menggunakan L.Geoserver.legend)
-            // Pastikan Anda telah mengonfigurasi L.Geoserver.js dengan benar dan GeoServer menghasilkan legenda.
             var wmsLegend = L.Control.extend({
                 onAdd: function(map) {
                     var div = L.DomUtil.create('div', 'info legend');
                     div.innerHTML = '<h4>Legenda</h4>' +
-                                    `<img src="http://localhost:8080/geoserver/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&WIDTH=20&HEIGHT=20&LAYER=Sudimoro123:SUDIMORO">`; // URL legenda
+                                    `<img src="http://localhost:8080/geoserver/Sudimoro123/wms?REQUEST=GetLegendGraphic&VERSION=1.0.0&FORMAT=image/png&Sudimoro123=Sudimoro_2" alt="Legenda">`; // URL legenda
                     div.style.backgroundColor = 'white';
                     div.style.padding = '10px';
                     div.style.border = '1px solid grey';
@@ -347,14 +360,6 @@
                     // Nothing to do here
                 }
             });
-
-            // Inisialisasi baseLayers dan overlays
-            var baseLayers = {
-                "OpenStreetMap": osm
-            };
-            var overlays = {
-                "Pola Ruang Sudimoro (WMS)": wmsLayer // Tambahkan layer WMS ke overlays
-            };
 
             // Muat data GeoJSON lokal
             const geoJsonFilePath = 'data/batas_kecamatan_banten.geojson';
@@ -395,41 +400,92 @@
                             }
                         });
 
-                        // Tambahkan layer GeoJSON ke objek overlays
-                        overlays["Batas Kecamatan Banten (GeoJSON)"] = geoJsonLayer; // Nama yang akan muncul di layer control
+                        overlays["Batas Kecamatan Banten (GeoJSON)"] = geoJsonLayer;
                         console.log("GeoJSON layer added to overlays.");
 
                     } else {
                         console.warn("GeoJSON file loaded, but it contains no features or is empty.");
-                        // alert("GeoJSON file loaded, but it contains no features to display. Check the GeoJSON content.");
                     }
 
-                    // Inisialisasi Layer Control setelah semua base dan overlay layers terdefinisi
-                    L.control.layers(baseLayers, overlays).addTo(map);
+                    // Inisialisasi Layer Control
+                    L.control.layers({"OpenStreetMap": osm}, overlays).addTo(map);
                     console.log("Layer control added.");
 
-                    // Opsional: Secara otomatis tambahkan layer GeoJSON dan WMS ke peta saat dimuat pertama kali
+                    // Secara otomatis tambahkan layer GeoJSON ke peta saat dimuat pertama kali
                     if (overlays["Batas Kecamatan Banten (GeoJSON)"]) {
                         overlays["Batas Kecamatan Banten (GeoJSON)"].addTo(map);
                     }
-                    wmsLayer.addTo(map); // Tambahkan WMS layer secara default
-
-                    // Tambahkan legenda WMS
-                    new wmsLegend().addTo(map);
 
                 })
                 .catch(error => {
                     console.error('Gagal memuat atau memproses data GeoJSON:', error);
-                    // alert('Gagal memuat data peta. Silakan cek konsol browser (tekan F12) untuk detail error: ' + error.message);
                 });
 
+            // Fungsionalitas Search Bar Kustom
+            const mapSearchInput = document.getElementById('map-search-input');
+            const mapSearchButton = document.getElementById('map-search-button');
+
+            // Tambahkan event listener agar search bar berfungsi
+            if (mapSearchButton && mapSearchInput) {
+                mapSearchButton.addEventListener('click', performSearch);
+                mapSearchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // Mencegah form submit jika search bar ada dalam form
+                        performSearch();
+                    }
+                });
+            } else {
+                console.error("Search input or button not found in the DOM. This should not happen if IDs are correct.");
+            }
+            
+            let searchMarker = null; // Untuk menyimpan marker hasil pencarian
+
+            function performSearch() {
+                const query = mapSearchInput.value;
+                if (query) {
+                    // Menggunakan Nominatim (OpenStreetMap) Geocoding API
+                    // Tambahkan batasan area pencarian (viewbox) untuk fokus pada wilayah tertentu (misal: Boyolali)
+                    // Koordinat viewbox: <min_lon>,<min_lat>,<max_lon>,<max_lat>
+                    // Contoh untuk area sekitar Boyolali: [110.4, -7.7, 110.8, -7.4]
+                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&addressdetails=1&bounded=1&viewbox=110.4,-7.7,110.8,-7.4`; 
+
+                    fetch(nominatimUrl)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok ' + response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data && data.length > 0) {
+                                const lat = parseFloat(data[0].lat);
+                                const lon = parseFloat(data[0].lon);
+                                
+                                // Hapus marker sebelumnya jika ada
+                                if (searchMarker) {
+                                    map.removeLayer(searchMarker);
+                                }
+
+                                map.setView([lat, lon], 15); // Pindah peta ke lokasi hasil pencarian, zoom level 15 (lebih dekat)
+                                
+                                // Tambahkan marker di lokasi yang dicari
+                                searchMarker = L.marker([lat, lon]).addTo(map)
+                                    .bindPopup(`<b>${data[0].display_name}</b>`).openPopup();
+                            } else {
+                                alert('Lokasi tidak ditemukan. Coba kata kunci lain.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching geocoding data:', error);
+                            alert('Terjadi kesalahan saat mencari lokasi. Pastikan ada koneksi internet.');
+                        });
+                } else {
+                    alert('Silakan masukkan lokasi yang ingin dicari.');
+                }
+            }
+
             map.on('click', function(e) {
-                
-                // L.popup()
-                //     .setLatLng(e.latlng)
-                //     .setContent("Anda mengklik di: " + e.latlng.toString())
-                //     .openOn(map);
-                
+                // Contoh: L.popup().setLatLng(e.latlng).setContent("Anda mengklik di: " + e.latlng.toString()).openOn(map);
             });
         });
     </script>
